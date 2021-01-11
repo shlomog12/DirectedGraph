@@ -22,7 +22,7 @@ class DiGraph(GraphInterface):
         return self.nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
-        # if not id1 in self.my_graph: return None
+        if not id1 in self.my_graph: return []
         return self.upside_neighbors[id1]
 
     def all_out_edges_of_node(self, id1: int) -> dict:

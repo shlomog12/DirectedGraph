@@ -9,13 +9,13 @@ from node_data import node_data
 from DiGraph import DiGraph
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
-import random
 
 
 class GraphAlgo(GraphAlgoInterface):
 
     def __init__(self, my_graph: DiGraph =None):
-        self.graph_algo = my_graph
+        if (my_graph==None) :self.graph_algo=DiGraph()
+        else: self.graph_algo = my_graph
 
     def get_graph(self) -> GraphInterface:
         return self.graph_algo
@@ -95,46 +95,29 @@ class GraphAlgo(GraphAlgoInterface):
         return ans
 
     def plot_graph(self) -> None:
-        rnd=random
+        if self.get_graph()==None: return
         graph=self.get_graph()
-        list_x=[]
-        list_y=[]
+        list_x,list_y, list_key=[],[],[]
         for i in graph.nodes:
             node=graph.get_node(i)
             key=node.get_key()
             pos=node.get_location()
             if pos==(0,0,0):
-                rnd.seed(key)
-                # x = rnd.random() * 1000
-                # y = rnd.random() * 1000
-                b=key
-                x=np.sin(b)* 400
-                y=np.cos(b)* 400
-                d=key*3
-                if x<0:
-                    x+=d
-                else:
-                    x-=d
-                if y<0:
-                    y+=d
-                else:
-                    y-=d
-
-
-                x+=500
-                y+=500
-
-
-                pos= (x,y,0)
-                node.set_location(pos)
+                x=np.sin(key)* 400+500
+                y=np.cos(key)* 400+500
             else:
                 x=pos[0]
                 y=pos[1]
-            plt.text(x, y+25, f"{key}",color="r")
             list_x.append(x)
             list_y.append(y)
-
-
+            list_key.append(key)
+        list_y = self.exchange_points(list_y)
+        list_x = self.exchange_points(list_x)
+        for i in list_key:
+            node =graph.get_node(i)
+            node.pos=(list_x[i],list_y[i],0)
+            plt.text(list_x[i], list_y[i] + 25, f"{i}", color="r")
+            plt.plot(list_x[i], list_y[i], 'yo')
 
         for key_current,edges in self.get_graph().neighbors.items():
             node_current=graph.get_node(key_current)
@@ -145,27 +128,18 @@ class GraphAlgo(GraphAlgoInterface):
                 dis_x=pos_nei[0]-pos_current[0]
                 dis_y=pos_nei[1]-pos_current[1]
 
-                plt.arrow(pos_current[0], pos_current[1], dis_x, dis_y,color="gray",length_includes_head=True, head_width=10, head_length=15,width=0.05,fc='k',ec='k' )
-
-        #
-        #
-        #
-        #
-        #
-        #
-        #     # for edge in self.get_graph().neighbors[key_current
-        #         print(edge)
-        #
-        # print(list_x)
-        # print(list_y)
-
-        # plt.arrow(200,200,350,350 ,length_includes_head=True , head_width=20, head_length=80)
-        plt.plot(list_x, list_y, 'yo')
+                plt.arrow(pos_current[0], pos_current[1], dis_x, dis_y,color="gray",
+                          length_includes_head=True, head_width=10, head_length=15,width=0.05,fc='k',ec='k' )
         plt.axis([0, 1000, 0, 1000])
+        plt.title("my graph")
         plt.show()
-        plt.show()
-        pass
 
+
+    def exchange_points(self,list_point: list):
+        min_point=min(list_point)
+        max_point=max(list_point)
+        range_points=700/(max_point-min_point)
+        return list(map(lambda x: (x - min_point) * range_points + 200,list_point))
 
 
 
@@ -205,8 +179,9 @@ class GraphAlgo(GraphAlgoInterface):
         return fathers
 
     def as_dict(self):
+        if self.get_graph()==None: return None
         Edges = []
-        nei = self.graph_algo.neighbors
+        nei = self.get_graph().neighbors
         for node_id in nei:
             for edge_tup in nei[node_id]:
                 src = node_id
@@ -233,9 +208,13 @@ class GraphAlgo(GraphAlgoInterface):
         Nodes = dict_graph["Nodes"]
 
         for node in Nodes:
-            str_pos = node["pos"]
-            pos_tup = tuple(map(int, str_pos.split(',')))
-            graph.add_node(node["id"], pos_tup)
+            if "pos" in node:
+
+                str_pos = node["pos"]
+                pos_tup = tuple(map(float, str_pos.split(',')))
+                graph.add_node(node["id"], pos_tup)
+            else:
+                graph.add_node(node["id"])
 
         for edge in Edges:
             graph.add_edge(edge["src"], edge["dest"], edge["w"])
@@ -257,6 +236,19 @@ class GraphAlgo(GraphAlgoInterface):
 
 
         return ans
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
