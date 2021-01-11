@@ -4,8 +4,7 @@ from math import inf
 from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
-
-from node_data import node_data
+from Node_data import node_data
 from DiGraph import DiGraph
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
@@ -13,9 +12,11 @@ from GraphInterface import GraphInterface
 
 class GraphAlgo(GraphAlgoInterface):
 
-    def __init__(self, my_graph: DiGraph =None):
-        if (my_graph==None) :self.graph_algo=DiGraph()
-        else: self.graph_algo = my_graph
+    def __init__(self, my_graph: DiGraph = None):
+        if (my_graph == None):
+            self.graph_algo = DiGraph()
+        else:
+            self.graph_algo = my_graph
 
     def get_graph(self) -> GraphInterface:
         return self.graph_algo
@@ -32,6 +33,7 @@ class GraphAlgo(GraphAlgoInterface):
         return False
 
     def save_to_json(self, file_name: str) -> bool:
+        if self.get_graph() == None: return False
         try:
             with open(file_name, "w") as file:
                 json.dump(self.as_dict(), indent=4, fp=file)
@@ -41,38 +43,37 @@ class GraphAlgo(GraphAlgoInterface):
 
         return False
 
-
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         null = (float(inf), [])
         graph = self.get_graph()
         if graph == None: return null
-        if  not id1  in graph.nodes or  not id2  in graph.nodes: return null
+        if not id1 in graph.nodes or not id2 in graph.nodes: return null
         fathers = self.init_tag(id1)
-        dis=graph.nodes[id2][1].get_tag()
+        dis = graph.nodes[id2][1].get_tag()
         if dis == -1: return null
-        path = self.get_path(id1, id2, fathers,[])
+        path = self.get_path(id1, id2, fathers, [])
         graph.nodes[id2][1].reset_tag()
         path.reverse()
-        ans =(dis , path)
+        ans = (dis, path)
         return ans
 
     def connected_component(self, id1: int) -> list:
-        ans=[]
-        graph=self.get_graph()
-        if graph==None: return ans
+        ans = []
+        graph = self.get_graph()
+        if graph == None: return ans
         if not id1 in graph.nodes: return ans
         self.init_tag(id1)
         for i in graph.nodes.values():
-            node=i[1]
-            if node.get_tag()!= -1:
+            node = i[1]
+            if node.get_tag() != -1:
                 ans.append(node.get_key())
-        revers_my_graph=self.revers_graph(graph)
+        revers_my_graph = self.revers_graph(graph)
         self.__init__(revers_my_graph)
         self.init_tag(id1)
-        del_from_ans=[]
+        del_from_ans = []
         for i in ans:
-            node=revers_my_graph.nodes[i][1]
-            if  node.get_tag()==-1:
+            node = revers_my_graph.nodes[i][1]
+            if node.get_tag() == -1:
                 del_from_ans.append(i)
         for i in del_from_ans:
             ans.remove(i)
@@ -81,13 +82,13 @@ class GraphAlgo(GraphAlgoInterface):
         return ans
 
     def connected_components(self) -> List[list]:
-        ans=[]
-        if self.graph_algo == None: return ans
+        ans = []
+        if self.get_graph() == None: return ans
         for node_id in self.get_graph().nodes:
-            flag=False
+            flag = False
             for group in ans:
                 if node_id in group:
-                    flag=True
+                    flag = True
                     break
             if not flag:
                 ans.append(self.connected_component(node_id))
@@ -95,74 +96,67 @@ class GraphAlgo(GraphAlgoInterface):
         return ans
 
     def plot_graph(self) -> None:
-        if self.get_graph()==None: return
-        graph=self.get_graph()
-        list_x,list_y, list_key=[],[],[]
+        graph = self.get_graph()
+        if graph == None or graph.node_size==0 : return
+
+        list_x, list_y, list_key = [], [], []
         for i in graph.nodes:
-            node=graph.get_node(i)
-            key=node.get_key()
-            pos=node.get_location()
-            if pos==(0,0,0):
-                x=np.sin(key)* 400+500
-                y=np.cos(key)* 400+500
+            node = graph.get_node(i)
+            key = node.get_key()
+            pos = node.get_location()
+            if pos == (0, 0, 0):
+                x = np.sin(key) * 400 + 500
+                y = np.cos(key) * 400 + 500
             else:
-                x=pos[0]
-                y=pos[1]
+                x = pos[0]
+                y = pos[1]
             list_x.append(x)
             list_y.append(y)
             list_key.append(key)
         list_y = self.exchange_points(list_y)
         list_x = self.exchange_points(list_x)
         for i in list_key:
-            node =graph.get_node(i)
-            node.pos=(list_x[i],list_y[i],0)
-            plt.text(list_x[i], list_y[i] + 25, f"{i}", color="r")
-            plt.plot(list_x[i], list_y[i], 'yo')
-
-        for key_current,edges in self.get_graph().neighbors.items():
-            node_current=graph.get_node(key_current)
-            pos_current=node_current.get_location()
+            node = graph.get_node(i)
+            x=list_x[i]
+            y=list_y[i]
+            node.pos = (x, y, 0)
+            plt.text(x, y + 25, f"{i}", color="r")
+            plt.plot(x,y, 'yo')
+        for key in graph.nodes:
+            node_current = graph.get_node(key)
+            pos_current = node_current.get_location()
+            edges =graph.all_out_edges_of_node(key)
             for i in edges:
-                nei=graph.get_node(i)
-                pos_nei=nei.get_location()
-                dis_x=pos_nei[0]-pos_current[0]
-                dis_y=pos_nei[1]-pos_current[1]
-
-                plt.arrow(pos_current[0], pos_current[1], dis_x, dis_y,color="gray",
-                          length_includes_head=True, head_width=10, head_length=15,width=0.05,fc='k',ec='k' )
+                nei = graph.get_node(i)
+                pos_nei = nei.get_location()
+                dis_x = pos_nei[0] - pos_current[0]
+                dis_y = pos_nei[1] - pos_current[1]
+                plt.arrow(pos_current[0], pos_current[1], dis_x, dis_y, color="gray",
+                          length_includes_head=True, head_width=10, head_length=15, width=0.05, fc='k', ec='k')
         plt.axis([0, 1000, 0, 1000])
         plt.title("my graph")
         plt.show()
 
+    def exchange_points(self, list_point: list) -> list:
+        min_point = min(list_point)
+        max_point = max(list_point)
+        range_points = 900 / (max_point - min_point)
+        return list(map(lambda x: (x - min_point) * range_points + 50, list_point))
 
-    def exchange_points(self,list_point: list):
-        min_point=min(list_point)
-        max_point=max(list_point)
-        range_points=700/(max_point-min_point)
-        return list(map(lambda x: (x - min_point) * range_points + 200,list_point))
-
-
-
-
-
-
-
-
-
-    def get_path(self, src: int, dest: int, fathers: {}, path: []):
+    def get_path(self, src: int, dest: int, fathers: {}, path: []) ->list:
         path.append(dest)
         if (dest == src):
             return path
         else:
             return self.get_path(src, fathers[dest], fathers, path)
 
-    def init_tag(self,  src: int = -1):
-        my_priority_queue= queue.PriorityQueue()
+    def init_tag(self, src: int = -1) -> dict:
+        my_priority_queue = queue.PriorityQueue()
         fathers = {src: -1}
         node_src = self.get_graph().nodes[src][1]
         node_src.set_tag(0)
         my_priority_queue.put(node_src)
-        while len(my_priority_queue.queue) !=0:
+        while len(my_priority_queue.queue) != 0:
             node_current = my_priority_queue.get()
             key_current = node_current.get_key()
             tag_current = node_current.get_tag()
@@ -178,8 +172,8 @@ class GraphAlgo(GraphAlgoInterface):
 
         return fathers
 
-    def as_dict(self):
-        if self.get_graph()==None: return None
+    def as_dict(self) -> dict:
+        if self.get_graph() == None: return None
         Edges = []
         nei = self.get_graph().neighbors
         for node_id in nei:
@@ -202,59 +196,28 @@ class GraphAlgo(GraphAlgoInterface):
         return {"Edges": Edges, "Nodes": Nodes}
 
     def dict_to_graph(self, dict_graph) -> DiGraph:
-
         graph = DiGraph()
         Edges = dict_graph["Edges"]
         Nodes = dict_graph["Nodes"]
-
         for node in Nodes:
             if "pos" in node:
-
                 str_pos = node["pos"]
                 pos_tup = tuple(map(float, str_pos.split(',')))
                 graph.add_node(node["id"], pos_tup)
             else:
                 graph.add_node(node["id"])
-
         for edge in Edges:
             graph.add_edge(edge["src"], edge["dest"], edge["w"])
-
         return graph
 
-    def revers_graph(self, graph:DiGraph)-> DiGraph:
-        ans=DiGraph()
+    def revers_graph(self, graph: DiGraph) -> DiGraph:
+        ans = DiGraph()
         for i in graph.nodes:
             ans.add_node(i)
 
-
-
-        edges=graph.upside_neighbors
-        for node_current,neighbors in edges.items():
+        edges = graph.upside_neighbors
+        for node_current, neighbors in edges.items():
             for edge in neighbors.values():
-                ans.add_edge(node_current,edge[0],edge[1])
-
-
+                ans.add_edge(node_current, edge[0], edge[1])
 
         return ans
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

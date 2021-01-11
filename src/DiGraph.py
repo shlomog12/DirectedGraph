@@ -1,5 +1,5 @@
 from GraphInterface import GraphInterface
-from node_data import node_data
+from Node_data import node_data
 
 
 class DiGraph(GraphInterface):
@@ -22,10 +22,11 @@ class DiGraph(GraphInterface):
         return self.nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
-        if not id1 in self.my_graph: return []
+        if not id1 in self.nodes: return []
         return self.upside_neighbors[id1]
 
     def all_out_edges_of_node(self, id1: int) -> dict:
+        if not id1 in self.nodes: return []
         return self.neighbors[id1]
 
     def get_mc(self) -> int:
