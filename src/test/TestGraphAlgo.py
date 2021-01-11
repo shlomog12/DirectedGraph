@@ -85,10 +85,13 @@ class TestGraphAlgo(TestCase):
         graph=TestDiGraph.build_graph24(self)
         algo=GraphAlgo(graph)
         algo.plot_graph()
-
+        self.assertEqual(graph,TestDiGraph.build_graph24(self))
         graph2=TestDiGraph.build_graph(self,100,300)
         algo.__init__(graph2)
         algo.plot_graph()
+        self.assertEqual(graph2, TestDiGraph.build_graph(self,100,300))
+
+
 
     def test_run_time(self):
         start = time.time()

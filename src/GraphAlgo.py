@@ -4,7 +4,7 @@ from math import inf
 from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
-from Node_data import node_data
+from NodeData import node_data
 from DiGraph import DiGraph
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
@@ -98,12 +98,13 @@ class GraphAlgo(GraphAlgoInterface):
     def plot_graph(self) -> None:
         graph = self.get_graph()
         if graph == None or graph.node_size==0 : return
-
+        pos_all={}
         list_x, list_y, list_key = [], [], []
         for i in graph.nodes:
             node = graph.get_node(i)
             key = node.get_key()
             pos = node.get_location()
+            pos_all[key]=pos
             if pos == (0, 0, 0):
                 x = np.sin(key) * 400 + 500
                 y = np.cos(key) * 400 + 500
@@ -136,6 +137,16 @@ class GraphAlgo(GraphAlgoInterface):
         plt.axis([0, 1000, 0, 1000])
         plt.title("my graph")
         plt.show()
+        for i,pos in pos_all.items():
+            node=graph.get_node(i)
+            node.set_location(pos)
+
+
+
+
+
+
+
 
     def exchange_points(self, list_point: list) -> list:
         min_point = min(list_point)

@@ -83,3 +83,30 @@ if __name__ == '__main__':
     start_all=time.time()
     run_time_graph_from_json()
     print(f"Total time of all the algorithms on all the graphs: {time.time()-start_all}")
+
+
+
+
+
+
+
+
+
+
+    # algo=GraphAlgo()
+    # algo.load_from_json("../data/A0")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/A1")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/A2")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/A3")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/A4")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/A5")
+    # algo.plot_graph()
+    # algo.load_from_json("../data/T0.json")
+    # algo.plot_graph()
+
+
