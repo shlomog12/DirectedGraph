@@ -22,11 +22,11 @@ class DiGraph(GraphInterface):
         return self.nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
-        if not id1 in self.nodes: return []
+        if not id1 in self.nodes: return {}
         return self.upside_neighbors[id1]
 
     def all_out_edges_of_node(self, id1: int) -> dict:
-        if not id1 in self.nodes: return []
+        if not id1 in self.nodes: return {}
         return self.neighbors[id1]
 
     def get_mc(self) -> int:

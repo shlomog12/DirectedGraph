@@ -5,6 +5,9 @@ from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
 
 
+
+
+
 class TestGraphAlgo(TestCase):
 
     def test_get_graph(self):
@@ -90,6 +93,11 @@ class TestGraphAlgo(TestCase):
         algo.__init__(graph2)
         algo.plot_graph()
         self.assertEqual(graph2, TestDiGraph.build_graph(self,100,300))
+
+
+
+
+
 
 
 

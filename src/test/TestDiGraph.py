@@ -161,9 +161,9 @@ class TestDiGraph(TestCase):
 
     def test_add_node(self):
         graph = DiGraph()
-        self.assertFalse(4 in graph.nodes)
+        self.assertFalse(4 in graph.get_all_v())
         boo1 = graph.add_node(4)
-        self.assertTrue(4 in graph.nodes)
+        self.assertTrue(4 in graph.get_all_v())
         self.assertTrue(boo1)
         boo2 = graph.add_node(4)
         self.assertFalse(boo2)
@@ -187,12 +187,12 @@ class TestDiGraph(TestCase):
         boo1 = graph.remove_node(45)
         self.assertFalse(boo1)
         graph.add_edge(0,4,0.5)
-        self.assertTrue(0 in graph.nodes)
+        self.assertTrue(0 in graph.get_all_v())
         self.assertTrue(0 in graph.upside_neighbors[4])
         self.assertTrue(0 in graph.neighbors)
         boo2 =graph.remove_node(0)
         self.assertTrue(boo2)
-        self.assertFalse(0 in graph.nodes)
+        self.assertFalse(0 in graph.get_all_v())
         self.assertFalse(0 in graph.upside_neighbors[4])
         self.assertFalse(0 in graph.neighbors)
 
