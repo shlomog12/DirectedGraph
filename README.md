@@ -1,12 +1,12 @@
+# OOP-EX3
 
-![](https://ibb.co/fYdZKvQ)
-
+## directed graph
+![graph7](https://user-images.githubusercontent.com/73135976/104511874-09395480-55f6-11eb-810e-a4868cda55f9.jpg)
 
 
 This project represents a data structure of a directed weighted graph. Which supports a large number of nodes.
 
-A. DiGraph:
-
+### A. DiGraph:
 
 A class that inherits from the GraphInterface class
 And represents the weighted directed graph,
@@ -27,7 +27,7 @@ The class implements functions for
 The number of vertices in the graph, the number of sides in the graph, the number of changes made to the graph
 
 
-B. GraphAlgo .:
+### B. GraphAlgo .:
 
 A class inherited from GraphAlgoInterface
 Which initializes the graph and executes algorithms of
