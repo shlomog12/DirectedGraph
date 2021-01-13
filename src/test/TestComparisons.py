@@ -10,28 +10,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class MyTestCase(unittest.TestCase):
 
-    def plt_load(self, file_name: str):
-        file_name = ROOT_DIR + file_name
 
-        algo = GraphAlgo()
-        algo.load_from_json(file_name)
-        algo.plot_graph()
-
-    def test_plt_load(self):
-        ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.plt_load("/B1/G_10_80_0.json")
-        self.plt_load("/B1/G_100_800_0.json")
-        self.plt_load("/B1/G_10_80_1.json")
-        self.plt_load("/B1/G_100_800_1.json")
-        self.plt_load("/B1/G_10_80_2.json")
-        self.plt_load("/B1/G_100_800_2.json")
-        self.plt_load("/B1/A0")
-        self.plt_load("/B1/A1")
-        self.plt_load("/B1/A2")
-        self.plt_load("/B1/A3")
-        self.plt_load("/B1/A4")
-        self.plt_load("/B1/A5")
-        self.plt_load("/B1/T0.json")
 
     def net_load_from_json(self, file_name: str) -> nx.DiGraph:
         try:

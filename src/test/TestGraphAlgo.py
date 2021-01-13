@@ -1,9 +1,9 @@
+import os
 import time
 from unittest import TestCase
 from TestDiGraph import TestDiGraph
 from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
-
 
 
 
@@ -55,21 +55,21 @@ class TestGraphAlgo(TestCase):
         self.assertEqual([15, 20], algo.connected_component(15))
         self.assertEqual([15, 20], algo.connected_component(20))
         self.assertEqual([23], algo.connected_component(23))
-        ans0=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22]
-        self.assertEqual(ans0,algo.connected_component(0))
+        ans0 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22]
+        self.assertEqual(ans0, algo.connected_component(0))
 
     def test_connected_components(self):
-        graph=DiGraph()
-        algo=GraphAlgo()
-        self.assertEqual([],algo.connected_components())
+        graph = DiGraph()
+        algo = GraphAlgo()
+        self.assertEqual([], algo.connected_components())
         algo.__init__(graph)
         self.assertEqual([], algo.connected_components())
-        graph=TestDiGraph.build_graph24(self)
+        graph = TestDiGraph.build_graph24(self)
         algo.__init__(graph)
-        ans1=[]
+        ans1 = []
         for i in range(24):
             ans1.append(i)
-        ans=[ans1]
+        ans = [ans1]
         self.assertEqual(ans, algo.connected_components())
         graph.remove_edge(20, 23)
         graph.remove_edge(20, 16)
@@ -77,55 +77,49 @@ class TestGraphAlgo(TestCase):
         ans1.remove(15)
         ans1.remove(20)
         ans1.remove(23)
-        ans=[ans1]
-        ans.append([15,20])
+        ans = [ans1]
+        ans.append([15, 20])
         ans.append([23])
         self.assertEqual(ans, algo.connected_components())
 
-
-
     def test_plot_graph(self):
-        graph=TestDiGraph.build_graph24(self)
-        algo=GraphAlgo(graph)
+        graph = TestDiGraph.build_graph24(self)
+        algo = GraphAlgo(graph)
         algo.plot_graph()
-        self.assertEqual(graph,TestDiGraph.build_graph24(self))
-        graph2=TestDiGraph.build_graph(self,100,300)
+        self.assertEqual(graph, TestDiGraph.build_graph24(self))
+        graph2 = TestDiGraph.build_graph(self, 100, 300)
         algo.__init__(graph2)
         algo.plot_graph()
-        self.assertEqual(graph2, TestDiGraph.build_graph(self,100,300))
+        self.assertEqual(graph2, TestDiGraph.build_graph(self, 100, 300))
+        self.plt_load("/B1/G_10_80_0.json")
+        self.plt_load("/B1/G_100_800_0.json")
+        self.plt_load("/B1/G_10_80_1.json")
+        self.plt_load("/B1/G_100_800_1.json")
+        self.plt_load("/B1/G_10_80_2.json")
+        self.plt_load("/B1/G_100_800_2.json")
+        self.plt_load("/B1/A0")
+        self.plt_load("/B1/A1")
+        self.plt_load("/B1/A2")
+        self.plt_load("/B1/A3")
+        self.plt_load("/B1/A4")
+        self.plt_load("/B1/A5")
+        self.plt_load("/B1/T0.json")
 
-
-
-
-
-
+    def plt_load(self, file_name: str):
+        ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+        file_name = ROOT_DIR + file_name
+        algo = GraphAlgo()
+        algo.load_from_json(file_name)
+        algo.plot_graph()
 
 
     def test_run_time(self):
         start = time.time()
         graph = TestDiGraph.build_graph(10 ** 4, 10 ** 5)
-        file="run_test"
-        algo=GraphAlgo(graph)
+        file = "run_test"
+        algo = GraphAlgo(graph)
         algo.save_to_json(file)
         algo.load_from_json(file)
         algo.connected_component(0)
         length_time = time.time() - start
         self.assertTrue(length_time <= 10)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
