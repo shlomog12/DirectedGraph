@@ -115,8 +115,8 @@ class MyTestCase(unittest.TestCase):
         print("components:")
         start = time.time()
         components = nx.strongly_connected_components(graph)
-        length_time = time.time() - start
-        print(f"time_components ={length_time}")
+        length_time = (time.time() - start)
+        print(f"time_components *1000 ={length_time}")
 
     def run_time_results_net(self, file_name: str, i: int, list_i: list):
         graph = self.net_load_from_json(ROOT_DIR + file_name)
@@ -126,7 +126,8 @@ class MyTestCase(unittest.TestCase):
 
     def run_time_graph_from_json_net(self):
         for i, tup in self.loading_data().items():
-            self.run_time_results_net(tup[0], i, tup[1])
+            if i == 5:
+                self.run_time_results_net(tup[0], i, tup[1])
 
     def test_run_time_my_algoritem(self):
         print("*********************************************************my**********************************")
@@ -139,9 +140,6 @@ class MyTestCase(unittest.TestCase):
         start_all_net = time.time()
         self.run_time_graph_from_json_net()
         print(f"NETWORKX - Total time of all the algorithms on all the graphs: {time.time() - start_all_net}")
-        # print("cc")
-        # x=json.load(ROOT_DIR+"/B1/G_10_80_0.json")
-        # print(x)
 
     def test_checking_correctness(self):
 
@@ -182,15 +180,3 @@ class MyTestCase(unittest.TestCase):
 
 
 
-
-
-
-
-
-
-
-
-    # if __name__ == '__main__':
-    #     # test_plt_load()
-    #     test_run_time_my_algoritem()
-    #     test_run_time_NetworkX()
