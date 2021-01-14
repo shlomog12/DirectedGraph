@@ -18,12 +18,12 @@ class DiGraph(GraphInterface):
     def __init__(self):
         """** ** ** ** *Constructor ** ** ** ** ** *"""
 
-        self.nodes = {}  # {key0: (key0, node0) , key1: (key1,node1)........}
+        self.nodes = {}  # #{key0:  node0 , key1: node1........}
         self.node_size = 0
         self.edge_size = 0
         self.mc = 0
-        self.upside_neighbors = {}  # {key {(key , weight),,,,},,,,,,}   curret <-
-        self.neighbors = {}  # {key {(key , weight),,,,},,,,,,}   curret ->
+        self.upside_neighbors = {}  # {key {key : weight,,,,},,,,,,}   curret <-
+        self.neighbors = {}  # {key {key : weight,,,,},,,,,,}   curret ->
 
     def v_size(self) -> int:
         """
@@ -83,8 +83,8 @@ class DiGraph(GraphInterface):
         if id1 == id2: return False
         if id2 in self.neighbors[id1]: return False
         self.edge_size += 1
-        self.upside_neighbors[id2][id1] = (id1, weight)
-        self.neighbors[id1][id2] = (id2, weight)
+        self.upside_neighbors[id2][id1] = weight
+        self.neighbors[id1][id2] = weight
         self.mc += 1
         return True
 
@@ -95,7 +95,7 @@ class DiGraph(GraphInterface):
         :return: the node_data by the node_id, None if none.
         """
 
-        return self.nodes[node_id][1]
+        return self.nodes[node_id]
 
     def add_node(self, node_id: int, pos: tuple = (0, 0, 0)) -> bool:
         """
@@ -105,7 +105,7 @@ class DiGraph(GraphInterface):
         """
         if node_id in self.nodes: return False
         node = node_data(node_id, pos)
-        self.nodes[node_id] = (node_id, node)
+        self.nodes[node_id] = node
         self.neighbors[node_id] = {}
         self.upside_neighbors[node_id] = {}
         self.node_size += 1
@@ -144,7 +144,7 @@ class DiGraph(GraphInterface):
         self.edge_size -= num_nei
         del self.neighbors[node_id]
         self.node_size -= 1
-        self.mc += num_nei + 1
+        self.mc += 1
         return True
 
     def __str__(self) -> str:
@@ -154,6 +154,8 @@ class DiGraph(GraphInterface):
         return f"Edges: {self.neighbors} , Nodes:+{self.nodes}"
 
     def __eq__(self, other) -> bool:
+
+
         """
         Equals method for testing the graph
         :param other:  - another graph for comparing
@@ -170,6 +172,12 @@ class DiGraph(GraphInterface):
         if self.neighbors != other.neighbors:
             return False
         return True
+
+
+
+
+
+
 
 
 

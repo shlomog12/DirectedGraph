@@ -85,10 +85,10 @@ class GraphAlgo(GraphAlgoInterface):
         if graph == None: return null
         if not id1 in graph.get_all_v() or not id2 in graph.get_all_v(): return null
         fathers = self.init_tag(id1)
-        dis = graph.get_all_v()[id2][1].get_tag()
+        dis = graph.get_all_v()[id2].get_tag()
         if dis == -1: return null
         path = self.get_path(id1, id2, fathers, [])
-        graph.get_all_v()[id2][1].reset_tag()
+        graph.get_all_v()[id2].reset_tag()
         path.reverse()
         ans = (dis, path)
         return ans
@@ -105,8 +105,7 @@ class GraphAlgo(GraphAlgoInterface):
         if graph == None: return ans
         if not id1 in graph.get_all_v(): return ans
         self.init_tag(id1)
-        for i in graph.get_all_v().values():
-            node = i[1]
+        for node in graph.get_all_v().values():
             if node.get_tag() != -1:
                 ans.append(node.get_key())
         revers_my_graph = self.revers_graph(graph)
@@ -114,7 +113,7 @@ class GraphAlgo(GraphAlgoInterface):
         self.init_tag(id1)
         del_from_ans = []
         for i in ans:
-            node = revers_my_graph.get_all_v()[i][1]
+            node = revers_my_graph.get_all_v()[i]
             if node.get_tag() == -1:
                 del_from_ans.append(i)
         for i in del_from_ans:
@@ -234,19 +233,19 @@ class GraphAlgo(GraphAlgoInterface):
         :return: fathers: dict
         """
 
+        graph=self.get_graph()
         my_priority_queue = queue.PriorityQueue()
         fathers = {src: -1}
-        node_src = self.get_graph().get_all_v()[src][1]
+        node_src = graph.get_all_v()[src]
         node_src.set_tag(0)
         my_priority_queue.put(node_src)
         while len(my_priority_queue.queue) != 0:
             node_current = my_priority_queue.get()
             key_current = node_current.get_key()
             tag_current = node_current.get_tag()
-            for edge in self.get_graph().neighbors[key_current].values():
-                distance = tag_current + edge[1]
-                key_dest = edge[0]
-                node_dest = self.get_graph().get_all_v()[key_dest][1]
+            for key_dest,w in graph.all_out_edges_of_node(key_current).items():
+                distance = tag_current + w
+                node_dest = graph.get_all_v()[key_dest]
                 tag_dest = node_dest.get_tag()
                 if tag_dest > distance or tag_dest == -1:
                     node_dest.set_tag(distance)
@@ -259,21 +258,20 @@ class GraphAlgo(GraphAlgoInterface):
         """
         :return: the dictionary that represents the graph
         """
-        if self.get_graph() == None: return None
+        graph=self.get_graph()
+        if  graph== None: return None
         Edges = []
-        nei = self.get_graph().neighbors
-        for node_id in nei:
-            for edge_tup in nei[node_id]:
+        nodes = graph.get_all_v()
+        for node_id in nodes:
+            for id,w in  graph.all_out_edges_of_node(node_id).items():
                 src = node_id
-                w = nei[node_id][edge_tup][1]
-                dest = nei[node_id][edge_tup][0]
+                dest = id
                 edge_dic = {"src": src, "w": w, "dest": dest}
                 Edges.append(edge_dic)
         Nodes = []
         nodes2 = self.graph_algo.get_all_v()
         for i in nodes2:
-            n_tup = nodes2[i]
-            node = n_tup[1]
+            node = nodes2[i]
             node_id = node.key
             pos = f"{node.pos[0]},{node.pos[1]},{node.pos[2]}"
             n_dict = {"pos": pos, "id": node_id}
@@ -309,8 +307,55 @@ class GraphAlgo(GraphAlgoInterface):
         ans = DiGraph()
         for i in graph.get_all_v():
             ans.add_node(i)
-        edges = graph.upside_neighbors
-        for node_current, neighbors in edges.items():
-            for edge in neighbors.values():
-                ans.add_edge(node_current, edge[0], edge[1])
+        for node_current in graph.get_all_v():
+            for neighbor,w in graph.all_in_edges_of_node(node_current).items():
+                ans.add_edge(node_current, neighbor, w)
         return ans
+
+
+
+
+
+
+
+
+"""
+
+        node = node_data(0)  # creating an object from this class
+        node.get_key()  # getting the id of the node
+        node.get_tag()  # getting the tag of the node
+        node.get_location()  # getting the geometric location of the node
+        node.set_tag(3)  # setting the tag of the node
+        node.set_location((4.5, 1, 2))  # setting the location of the node
+        node.reset_tag()  # Resets the tags of all vertices in the class
+
+        graph = DiGraph()               # creating graph object
+        graph.add_node(0)               # adding a node(0) to the graph
+        graph.add_node(1)               # adding a node(1) to the graph
+        graph.add_edge(0,1,0.5)         # creat an edge between node(0) to node(1) with weight=0.5
+        graph.get_all_v()               # dictionary of all the nodes in the Graph -> {0: node(0), 1: node(1)}
+        graph.all_out_edges_of_node(0)  # getting all the nodes connected from node_id(0) -> {1: 0.5}
+        graph.all_in_edges_of_node(1)   # getting all the nodes connected to (into) node(1) -> {0: 0.5}
+        graph.v_size()                  # getting the number of nodes in the graph -> 2
+        graph.e_size()                  # getting the number of edges in the graph -> 1
+        graph.get_mc()                  # getting the Mode Count -> 3
+        graph.remove_edge(0,1)          # deletes the edge(0,1) from the graph
+        graph.remove_node(1)            # Deletes the node(1) from the graph
+
+        algo =GraphAlgo(graph)           # creating graph algo object and initialization a graph
+        algo.get_graph()                 # getting the graph -> graph
+        algo.save_to_json("file_name")   # saving the graph to a file - JSON format
+        algo.load_from_json("file_name") # loading a graph from a file - JSON format
+        algo.shortest_path(0,100)   # getting  list of node_data representing the shortest path Between two nodes and the weight of the path
+        algo.connected_component(0)      # getting Strongly Connected Component(SCC) that node id1 is a part of -> [0, 1]
+        algo.connected_components()      #  getting all the Strongly Connected Component(SCC) in the graph.
+        algo.plot_graph()                # Draws the graph on a graphical window
+
+
+"""
+
+
+
+
+
+

@@ -89,7 +89,7 @@ class TestDiGraph(TestCase):
         self.assertEqual(graph.edge_size, size + 1)
         graph.remove_edge(3, 14)
         self.assertEqual(graph.edge_size, size)
-        len8 = len(graph.neighbors[8])
+        len8 = len(graph.all_out_edges_of_node(8))
         graph.remove_node(8)
         self.assertEqual(graph.edge_size, size - len8)
 
@@ -97,13 +97,13 @@ class TestDiGraph(TestCase):
         graph = self.build_graph24()
         dict1 = graph.get_all_v()
         for i in range(graph.node_size):
-            self.assertEqual(dict1[i], (i, graph.get_node(i)))
+            self.assertEqual(dict1[i],  graph.get_node(i))
 
     def test_all_in_edges_of_node(self):
         graph = self.build_graph24()
         graph.add_node(26)
         dict_26_in = {}
-        dict_8_in = {5: (5, 27), 10: (10, 10.5), 14: (14, 2.7)}
+        dict_8_in = {5:  27, 10:  10.5, 14:  2.7}
         self.assertEqual(dict_8_in, graph.all_in_edges_of_node(8))
         self.assertEqual(dict_26_in, graph.all_in_edges_of_node(26))
 
@@ -111,7 +111,7 @@ class TestDiGraph(TestCase):
         graph = self.build_graph24()
         graph.add_node(26)
         dict_26_out = {}
-        dict_8_out = {9: (9, 13.1), 10: (10, 0.01), 3: (3, 61), 14: (14, 2.8), 0: (0, 9.999)}
+        dict_8_out = {9:  13.1, 10:  0.01, 3:  61, 14: 2.8, 0:  9.999}
         self.assertEqual(dict_8_out, graph.all_out_edges_of_node(8))
         self.assertEqual(dict_26_out, graph.all_out_edges_of_node(26))
 
@@ -141,20 +141,19 @@ class TestDiGraph(TestCase):
         self.assertEqual(graph.get_mc(), size + 3)
         graph.remove_node(53)
         self.assertEqual(graph.get_mc(), size + 3)
-        len8 = len(graph.neighbors[8])
         graph.remove_node(8)
-        self.assertEqual(graph.get_mc(), size + 3 + 1 + len8)
+        self.assertEqual(graph.get_mc(), size + 3 + 1 )
 
     def test_add_edge(self):
         graph = self.build_graph(10)
         bool1 = graph.add_edge(0, 12, 3.5)
-        self.assertFalse(12 in graph.neighbors[0])
+        self.assertFalse(12 in graph.all_out_edges_of_node(0))
         self.assertFalse(bool1)
         bool2 = graph.add_edge(0, 4, 3.5)
-        self.assertTrue(4 in graph.neighbors[0])
+        self.assertTrue(4 in graph.all_out_edges_of_node(0))
         self.assertTrue(bool2)
         bool3 = graph.add_edge(0, 0, 3.5)
-        self.assertFalse(0 in graph.neighbors[0])
+        self.assertFalse(0 in graph.all_out_edges_of_node(0))
         self.assertFalse(bool3)
         bool4 = graph.add_edge(0, 4, 2.5)
         self.assertFalse(bool4)
@@ -176,9 +175,9 @@ class TestDiGraph(TestCase):
         boo2 = graph.remove_edge(7, 2)
         self.assertFalse(boo1)
         self.assertFalse(boo2)
-        self.assertTrue(1 in graph.neighbors[0])
+        self.assertTrue(1 in graph.all_out_edges_of_node(0))
         boo3 = graph.remove_edge(0, 1)
-        self.assertFalse(1 in graph.neighbors[0])
+        self.assertFalse(1 in graph.all_out_edges_of_node(0))
         self.assertTrue(boo3)
 
 
@@ -188,12 +187,12 @@ class TestDiGraph(TestCase):
         self.assertFalse(boo1)
         graph.add_edge(0,4,0.5)
         self.assertTrue(0 in graph.get_all_v())
-        self.assertTrue(0 in graph.upside_neighbors[4])
+        self.assertTrue(0 in graph.all_in_edges_of_node(4))
         self.assertTrue(0 in graph.neighbors)
         boo2 =graph.remove_node(0)
         self.assertTrue(boo2)
         self.assertFalse(0 in graph.get_all_v())
-        self.assertFalse(0 in graph.upside_neighbors[4])
+        self.assertFalse(0 in graph.all_in_edges_of_node(4))
         self.assertFalse(0 in graph.neighbors)
 
     def test_run_time(self):
