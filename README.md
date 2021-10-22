@@ -1,6 +1,6 @@
 # OOP-EX3
 
-## directed graph
+## Directed Graph
 ![graph7](https://user-images.githubusercontent.com/73135976/104511874-09395480-55f6-11eb-810e-a4868cda55f9.jpg)
 
 
